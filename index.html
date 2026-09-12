@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>上市公司价值投资评分器</title>
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--text:#17202a;--muted:#738094;--line:#e5e9ef;--accent:#243b53;--good:#28724f;--warn:#9a681b;--bad:#a33b3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif}
+.wrap{max-width:1280px;margin:auto;padding:26px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:18px}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted);margin:0 0 7px}.top h1{font-size:29px;margin:0 0 6px}.sub{margin:0;color:var(--muted)}
+.company{width:230px}.company label,.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+input,textarea{font:inherit;border:1px solid #d9dee7;border-radius:8px;background:#fff;padding:9px 10px;outline:0;width:100%;color:var(--text)}
+input:focus,textarea:focus{border-color:#8797aa}
+.hero{display:grid;grid-template-columns:1.05fr 1.5fr 1fr;gap:12px;margin-bottom:12px}.hero>div,.panel,.score{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.hero>div{padding:17px}.hero span{font-size:12px;color:var(--muted)}.scorebig{font-size:52px;font-weight:750;line-height:1;margin:8px 5px 3px 0;display:inline-block}.hero em{font-style:normal;color:#8b95a4}.quality{font-weight:650}.verdict b{display:block;font-size:20px;margin-top:14px}.price input{width:110px;margin-top:10px;font-size:21px;font-weight:650}.unit{font-size:12px!important;margin-left:5px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.score{padding:16px}.score h3{font-size:15px;margin:0 0 10px}.weight{font-size:11px;color:#8a94a3;font-weight:400}.row{display:flex;gap:10px;align-items:center}.sc{width:72px;font-size:19px;font-weight:700}.meter{height:7px;background:#edf0f4;border-radius:10px;overflow:hidden;flex:1}.meter i{height:100%;display:block;background:var(--accent);border-radius:10px}.score small{display:block;color:#7a8595;line-height:1.5;margin-top:9px}
+.lower{display:grid;grid-template-columns:1.45fr 1fr;gap:12px;margin-top:12px}.panel{padding:17px}.panel h2{font-size:16px;margin:0 0 14px}.valuation{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.bar{height:30px;background:#edf0f4;border-radius:18px;position:relative;margin:18px 0 10px}.mark{position:absolute;top:0;width:2px;height:100%;background:var(--accent)}.mark span{position:absolute;top:-18px;left:0;transform:translateX(-50%);font-size:10px;color:var(--muted);white-space:nowrap}.values{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}.values b{font-size:16px;color:var(--text)}
+.risks{display:grid;grid-template-columns:1fr 1fr;gap:7px}.riskrow{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:#f7f8fa;border-radius:8px;font-size:12px}.riskrow input{width:auto}.riskstate{margin-top:11px;font-size:13px;font-weight:650}
+.notes{margin-top:12px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.notes textarea{min-height:104px;resize:vertical}.notes>.field{margin-top:13px}
+footer{text-align:center;color:#8c95a3;font-size:11px;padding:18px 0}
+@media(max-width:900px){.top{align-items:stretch;flex-direction:column}.company{width:100%}.hero,.lower{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.wrap{padding:13px}.grid,.three,.valuation{grid-template-columns:1fr}.top h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div>
+    <p class="eyebrow">VALUE INVESTING · 100 POINT MODEL</p>
+    <h1>上市公司价值投资评分器</h1>
+    <p class="sub">把年报研究统一成一张可量化、可复用的一页纸模型</p>
+  </div>
+  <div class="company"><label>公司名称</label><input id="company" value="赣锋锂业"></div>
+</header>
+
+<section class="hero">
+  <div><span>综合评分</span><strong class="scorebig" id="total">75</strong><em>/100</em><p class="quality" id="quality">优秀偏周期</p></div>
+  <div><span>投资结论</span><b id="verdict">合理估值 / 持有观察</b></div>
+  <div><span>当前价格</span><br><input id="price" type="number" value="46.67" step=".01"><span class="unit">元</span></div>
+</section>
+
+<section class="grid" id="scores"></section>
+
+<section class="lower">
+  <div class="panel">
+    <h2>估值与价格</h2>
+    <div class="valuation">
+      <div class="field"><label>正常化利润（亿元）</label><input id="profit" type="number" value="80" step=".1"></div>
+      <div class="field"><label>悲观 PE</label><input id="peLow" type="number" value="10" step=".5"></div>
+      <div class="field"><label>合理 PE</label><input id="peMid" type="number" value="13" step=".5"></div>
+      <div class="field"><label>乐观 PE</label><input id="peHigh" type="number" value="15" step=".5"></div>
+    </div>
+    <div class="bar">
+      <i class="mark" id="mLow"><span>悲观</span></i><i class="mark" id="mMid"><span>合理</span></i><i class="mark" id="mHigh"><span>乐观</span></i><i class="mark" id="mNow"><span>当前</span></i>
+    </div>
+    <div class="values"><span>悲观价值 <b id="vLow">—</b></span><span>合理价值 <b id="vMid">—</b></span><span>乐观价值 <b id="vHigh">—</b></span></div>
+  </div>
+
+  <div class="panel">
+    <h2>风险排雷 · 一票否决</h2>
+    <div id="risks" class="risks"></div>
+    <div id="riskstate" class="riskstate">当前：未触发否决项</div>
+  </div>
+</section>
+
+<section class="panel notes">
+  <h2>投资结论</h2>
+  <div class="three">
+    <div class="field"><label>核心优势</label><textarea id="advantages">全球锂资源布局；资源、锂盐、电池一体化；项目持续释放。</textarea></div>
+    <div class="field"><label>核心问题</label><textarea id="problems">利润高度受锂价周期影响；现金转换率偏低；资本开支较重。</textarea></div>
+    <div class="field"><label>最大风险</label><textarea id="risk">锂价再次进入下行周期。</textarea></div>
+  </div>
+  <div class="field"><label>下一期重点跟踪（每行一项）</label><textarea id="follow">经营现金流 / 净利润能否明显提升
+核心锂资源项目产能释放情况
+锂价与锂盐盈利能力变化</textarea></div>
+</section>
+
+<footer>固定模型：商业模式15｜成长性15｜盈利能力15｜现金流15｜资产质量15｜护城河10｜管理层/资本配置5｜估值10</footer>
+</div>
+
+<script>
+const dims=[
+["商业模式",15,"行业地位、商业模式、核心产品、收入结构"],
+["成长性",15,"营收、扣非利润、核心业务及持续性"],
+["盈利能力",15,"毛利率、净利率、ROE及ROE结构"],
+["现金流",15,"OCF、现金转换率、销售收现率、FCF"],
+["资产质量",15,"负债率、应收、存货、商誉、资本化"],
+["护城河",10,"品牌、成本、技术、渠道、规模、资源"],
+["管理层/资本配置",5,"分红、再投资、并购、股东回报"],
+["估值",10,"PE、历史估值、FCF、安全边际"]
+];
+const defaults=[13,13,11,9,10,8,3,8];
+const riskList=["审计意见异常","重大财务造假/资金占用","经营现金流长期为负","应收增速显著超过收入","存货异常增长","商誉/净资产过高","非经常性收益撑利润","研发资本化异常上升","收入确认存在重大判断","高杠杆+现金流恶化"];
+const scoreBox=document.getElementById("scores");
+dims.forEach((d,i)=>{
+  scoreBox.insertAdjacentHTML("beforeend",`<div class="score"><h3>${d[0]} <span class="weight">/ ${d[1]}分</span></h3><div class="row"><input class="sc" data-max="${d[1]}" type="number" min="0" max="${d[1]}" step=".5" value="${defaults[i]}"><div class="meter"><i></i></div></div><small>${d[2]}</small></div>`);
+});
+document.getElementById("risks").innerHTML=riskList.map(r=>`<div class="riskrow"><span>${r}</span><input type="checkbox" class="risk" aria-label="${r}"></div>`).join("");
+const $=id=>document.getElementById(id);
+
+function valuation(){
+  const profit=+$("profit").value||0;
+  const shares=20.97; // 赣锋示例；更换公司时可自行修改为实际总股本
+  const vals=[
+    profit*(+$("peLow").value||0)/shares,
+    profit*(+$("peMid").value||0)/shares,
+    profit*(+$("peHigh").value||0)/shares
+  ];
+  $("vLow").textContent=vals[0].toFixed(1)+"元";
+  $("vMid").textContent=vals[1].toFixed(1)+"元";
+  $("vHigh").textContent=vals[2].toFixed(1)+"元";
+  const max=Math.max(vals[2],+$("price").value||0,1);
+  ["mLow","mMid","mHigh","mNow"].forEach((id,i)=>{
+    const v=i<3?vals[i]:+$("price").value||0;
+    $(id).style.left=Math.min(100,Math.max(0,v/max*100))+"%";
+  });
+}
+function calc(){
+  let total=0;
+  document.querySelectorAll(".sc").forEach(x=>{
+    const max=+x.dataset.max;
+    const v=Math.max(0,Math.min(max,+x.value||0));
+    x.value=v; total+=v;
+    x.nextElementSibling.firstElementChild.style.width=(v/max*100)+"%";
+  });
+  $("total").textContent=Number.isInteger(total)?total:total.toFixed(1);
+  $("quality").textContent=total>=85?"优秀":total>=75?"优秀偏周期":total>=65?"良好":total>=55?"一般":"谨慎";
+  const blocked=document.querySelectorAll(".risk:checked").length>0;
+  $("verdict").textContent=blocked?"风险否决 / 重点核查":total>=85?"优质公司 / 可重点研究":total>=75?"合理估值 / 持有观察":total>=65?"观察 / 等待更好价格":"谨慎";
+  $("riskstate").textContent=blocked?"当前：已触发一票否决项，请先完成风险核查":"当前：未触发否决项";
+  $("riskstate").className="riskstate "+(blocked?"bad":"good");
+  valuation();
+}
+document.addEventListener("input",calc);
+calc();
+</script>
+</body>
+</html>
