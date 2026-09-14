@@ -1,139 +1,72 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>上市公司价值投资评分器</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>猪周期领先指标监控</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#f5f7fa;--card:#fff;--text:#17202a;--muted:#738094;--line:#e5e9ef;--accent:#243b53;--good:#28724f;--warn:#9a681b;--bad:#a33b3b}
+:root{--nav:#102a43;--bg:#f4f7fb;--card:#fff;--text:#172b4d;--muted:#718096;--line:#e6edf5;--blue:#1769aa;--green:#17855b;--orange:#b7791f;--red:#c53030}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif}
-.wrap{max-width:1280px;margin:auto;padding:26px}
-.top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:18px}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted);margin:0 0 7px}.top h1{font-size:29px;margin:0 0 6px}.sub{margin:0;color:var(--muted)}
-.company{width:230px}.company label,.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-input,textarea{font:inherit;border:1px solid #d9dee7;border-radius:8px;background:#fff;padding:9px 10px;outline:0;width:100%;color:var(--text)}
-input:focus,textarea:focus{border-color:#8797aa}
-.hero{display:grid;grid-template-columns:1.05fr 1.5fr 1fr;gap:12px;margin-bottom:12px}.hero>div,.panel,.score{background:var(--card);border:1px solid var(--line);border-radius:14px}
-.hero>div{padding:17px}.hero span{font-size:12px;color:var(--muted)}.scorebig{font-size:52px;font-weight:750;line-height:1;margin:8px 5px 3px 0;display:inline-block}.hero em{font-style:normal;color:#8b95a4}.quality{font-weight:650}.verdict b{display:block;font-size:20px;margin-top:14px}.price input{width:110px;margin-top:10px;font-size:21px;font-weight:650}.unit{font-size:12px!important;margin-left:5px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.score{padding:16px}.score h3{font-size:15px;margin:0 0 10px}.weight{font-size:11px;color:#8a94a3;font-weight:400}.row{display:flex;gap:10px;align-items:center}.sc{width:72px;font-size:19px;font-weight:700}.meter{height:7px;background:#edf0f4;border-radius:10px;overflow:hidden;flex:1}.meter i{height:100%;display:block;background:var(--accent);border-radius:10px}.score small{display:block;color:#7a8595;line-height:1.5;margin-top:9px}
-.lower{display:grid;grid-template-columns:1.45fr 1fr;gap:12px;margin-top:12px}.panel{padding:17px}.panel h2{font-size:16px;margin:0 0 14px}.valuation{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.bar{height:30px;background:#edf0f4;border-radius:18px;position:relative;margin:18px 0 10px}.mark{position:absolute;top:0;width:2px;height:100%;background:var(--accent)}.mark span{position:absolute;top:-18px;left:0;transform:translateX(-50%);font-size:10px;color:var(--muted);white-space:nowrap}.values{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}.values b{font-size:16px;color:var(--text)}
-.risks{display:grid;grid-template-columns:1fr 1fr;gap:7px}.riskrow{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:#f7f8fa;border-radius:8px;font-size:12px}.riskrow input{width:auto}.riskstate{margin-top:11px;font-size:13px;font-weight:650}
-.notes{margin-top:12px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.notes textarea{min-height:104px;resize:vertical}.notes>.field{margin-top:13px}
-footer{text-align:center;color:#8c95a3;font-size:11px;padding:18px 0}
-@media(max-width:900px){.top{align-items:stretch;flex-direction:column}.company{width:100%}.hero,.lower{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.wrap{padding:13px}.grid,.three,.valuation{grid-template-columns:1fr}.top h1{font-size:24px}}
-</style>
-</head>
-<body>
-<div class="wrap">
-<header class="top">
-  <div>
-    <p class="eyebrow">VALUE INVESTING · 100 POINT MODEL</p>
-    <h1>上市公司价值投资评分器</h1>
-    <p class="sub">把年报研究统一成一张可量化、可复用的一页纸模型</p>
-  </div>
-  <div class="company"><label>公司名称</label><input id="company" value="赣锋锂业"></div>
-</header>
-
+.app{display:flex;min-height:100vh}.side{width:215px;background:linear-gradient(180deg,#102a43,#183b5d);color:#fff;padding:22px 14px;position:fixed;inset:0 auto 0 0}.brand{font-size:18px;font-weight:800;padding:0 10px 26px}.brand small{display:block;font-size:10px;opacity:.65;margin-top:5px;letter-spacing:1.5px}.nav{display:grid;gap:6px}.nav div{padding:11px 12px;border-radius:9px;font-size:13px;opacity:.82}.nav .on{background:#ffffff1f;opacity:1}.main{margin-left:215px;width:calc(100% - 215px);padding:22px 26px 30px}.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}.title h1{margin:0;font-size:27px}.title p{margin:7px 0 0;color:var(--muted);font-size:12px}.actions{display:flex;gap:10px;align-items:center}.update{font-size:11px;color:var(--muted)}button{border:0;border-radius:8px;background:var(--blue);color:#fff;padding:10px 15px;font-weight:700;cursor:pointer}.notice{margin-top:10px;padding:9px 12px;border:1px solid #c9ddf0;background:#eef6fd;color:#285b85;border-radius:9px;font-size:11px}
+.hero,.grid{display:grid;gap:12px}.hero{grid-template-columns:1fr 1.25fr 1.2fr;margin:14px 0}.box,.card{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:0 2px 10px #102a4309}.box{padding:16px}.eyebrow{font-size:11px;color:var(--muted)}.stage{font-size:24px;font-weight:800;margin:8px 0 4px}.signal{font-size:15px;font-weight:800}.score{font-size:42px;font-weight:850;margin-top:5px}.focus{font-size:12px;line-height:1.65;margin:9px 0 0}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:14px}.head{display:flex;justify-content:space-between;gap:12px}.head h2{font-size:16px;margin:0 0 4px}.meta{font-size:10px;color:var(--muted)}.pill{padding:5px 9px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap;height:max-content}.low{background:#e8f7ef;color:var(--green)}.mid{background:#fff4dc;color:var(--orange)}.high{background:#fdeaea;color:var(--red)}.chart{height:250px;margin-top:8px}.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:8px;border-top:1px solid var(--line);padding-top:9px}.metric{font-size:11px}.metric span{display:block;color:var(--muted);font-size:10px;margin-bottom:3px}.judgement{margin-top:9px;padding:9px 10px;border-radius:8px;background:#f2fbf7;color:#256b50;font-size:11px;line-height:1.55}.rules{margin-top:12px}.rules h2{font-size:16px;margin:0 0 10px}.rulesgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.rule{background:#f7f9fc;border-radius:9px;padding:11px;font-size:11px;line-height:1.55}.rule b{display:block;margin-bottom:4px}.foot{margin-top:12px;color:var(--muted);font-size:10px;line-height:1.6}
+@media(max-width:1050px){.side{display:none}.main{margin-left:0;width:100%;padding:16px}.hero,.grid,.rulesgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.hero,.grid,.rulesgrid{grid-template-columns:1fr}.top{align-items:stretch;flex-direction:column}.actions{justify-content:space-between}.chart{height:220px}.metrics{grid-template-columns:1fr 1fr}.metrics .metric:last-child{display:none}}
+</style></head>
+<body><div class="app">
+<aside class="side"><div class="brand">猪周期领先指标看板<small>PIG CYCLE MONITOR</small></div><div class="nav"><div class="on">◈ 总览</div><div>◌ 指标详情</div><div>▣ 数据说明</div><div>⌁ 判断规则</div></div></aside>
+<main class="main">
+<section class="top"><div class="title"><h1>猪周期领先指标监控</h1><p>2024年至今｜6大核心指标｜历史分位 + 趋势 + 周期判断</p></div><div class="actions"><span class="update" id="update">读取中…</span><button id="refresh">刷新数据</button></div></section>
+<div class="notice">数据由 GitHub Actions 定时更新。若首次打开仍显示“初始化中”，等待自动任务完成后点击“刷新数据”。</div>
 <section class="hero">
-  <div><span>综合评分</span><strong class="scorebig" id="total">75</strong><em>/100</em><p class="quality" id="quality">优秀偏周期</p></div>
-  <div><span>投资结论</span><b id="verdict">合理估值 / 持有观察</b></div>
-  <div><span>当前价格</span><br><input id="price" type="number" value="46.67" step=".01"><span class="unit">元</span></div>
+<div class="box"><div class="eyebrow">当前周期阶段</div><div class="stage" id="stage">—</div><div class="signal" id="signal">—</div><p class="focus" id="focus">—</p></div>
+<div class="box"><div class="eyebrow">综合领先信号</div><div class="score" id="score">—</div><p class="focus" id="overall">—</p></div>
+<div class="box"><div class="eyebrow">近期重点关注</div><p class="focus" id="watch">—</p></div>
 </section>
-
-<section class="grid" id="scores"></section>
-
-<section class="lower">
-  <div class="panel">
-    <h2>估值与价格</h2>
-    <div class="valuation">
-      <div class="field"><label>正常化利润（亿元）</label><input id="profit" type="number" value="80" step=".1"></div>
-      <div class="field"><label>悲观 PE</label><input id="peLow" type="number" value="10" step=".5"></div>
-      <div class="field"><label>合理 PE</label><input id="peMid" type="number" value="13" step=".5"></div>
-      <div class="field"><label>乐观 PE</label><input id="peHigh" type="number" value="15" step=".5"></div>
-    </div>
-    <div class="bar">
-      <i class="mark" id="mLow"><span>悲观</span></i><i class="mark" id="mMid"><span>合理</span></i><i class="mark" id="mHigh"><span>乐观</span></i><i class="mark" id="mNow"><span>当前</span></i>
-    </div>
-    <div class="values"><span>悲观价值 <b id="vLow">—</b></span><span>合理价值 <b id="vMid">—</b></span><span>乐观价值 <b id="vHigh">—</b></span></div>
-  </div>
-
-  <div class="panel">
-    <h2>风险排雷 · 一票否决</h2>
-    <div id="risks" class="risks"></div>
-    <div id="riskstate" class="riskstate">当前：未触发否决项</div>
-  </div>
-</section>
-
-<section class="panel notes">
-  <h2>投资结论</h2>
-  <div class="three">
-    <div class="field"><label>核心优势</label><textarea id="advantages">全球锂资源布局；资源、锂盐、电池一体化；项目持续释放。</textarea></div>
-    <div class="field"><label>核心问题</label><textarea id="problems">利润高度受锂价周期影响；现金转换率偏低；资本开支较重。</textarea></div>
-    <div class="field"><label>最大风险</label><textarea id="risk">锂价再次进入下行周期。</textarea></div>
-  </div>
-  <div class="field"><label>下一期重点跟踪（每行一项）</label><textarea id="follow">经营现金流 / 净利润能否明显提升
-核心锂资源项目产能释放情况
-锂价与锂盐盈利能力变化</textarea></div>
-</section>
-
-<footer>固定模型：商业模式15｜成长性15｜盈利能力15｜现金流15｜资产质量15｜护城河10｜管理层/资本配置5｜估值10</footer>
-</div>
-
+<section class="grid" id="grid"></section>
+<section class="box rules"><h2>判断原则</h2><div class="rulesgrid">
+<div class="rule"><b>能繁母猪｜领先8–12个月</b>连续下降代表去产能；低位继续下降偏利多；低位回升要警惕供给重新增加。</div>
+<div class="rule"><b>仔猪价格｜领先4–6个月</b>低位持续上涨代表补栏预期改善；猪价涨而仔猪不涨，反转可信度较低。</div>
+<div class="rule"><b>商品猪价格｜当前景气</b>低位向上是修复，但不能单独确认周期反转。</div>
+<div class="rule"><b>出栏均重｜领先1–3个月</b>猪价上涨同时均重下降较健康；均重持续升高需防集中出栏。</div>
+<div class="rule"><b>生猪期货｜未来预期</b>远月预期改善说明市场提前交易未来景气；期货不能单独作为买卖依据。</div>
+<div class="rule"><b>养殖利润｜去产能压力</b>亏损持续越久，去产能压力越强；利润转正后观察补栏是否重新启动。</div>
+</div><div class="foot">综合判断采用历史分位数与近期趋势相结合；能繁母猪权重最高，其次为仔猪与期货，商品猪、均重和利润用于验证。该看板用于研究，不构成投资建议。</div></section>
+</main></div>
 <script>
-const dims=[
-["商业模式",15,"行业地位、商业模式、核心产品、收入结构"],
-["成长性",15,"营收、扣非利润、核心业务及持续性"],
-["盈利能力",15,"毛利率、净利率、ROE及ROE结构"],
-["现金流",15,"OCF、现金转换率、销售收现率、FCF"],
-["资产质量",15,"负债率、应收、存货、商誉、资本化"],
-["护城河",10,"品牌、成本、技术、渠道、规模、资源"],
-["管理层/资本配置",5,"分红、再投资、并购、股东回报"],
-["估值",10,"PE、历史估值、FCF、安全边际"]
-];
-const defaults=[13,13,11,9,10,8,3,8];
-const riskList=["审计意见异常","重大财务造假/资金占用","经营现金流长期为负","应收增速显著超过收入","存货异常增长","商誉/净资产过高","非经常性收益撑利润","研发资本化异常上升","收入确认存在重大判断","高杠杆+现金流恶化"];
-const scoreBox=document.getElementById("scores");
-dims.forEach((d,i)=>{
-  scoreBox.insertAdjacentHTML("beforeend",`<div class="score"><h3>${d[0]} <span class="weight">/ ${d[1]}分</span></h3><div class="row"><input class="sc" data-max="${d[1]}" type="number" min="0" max="${d[1]}" step=".5" value="${defaults[i]}"><div class="meter"><i></i></div></div><small>${d[2]}</small></div>`);
-});
-document.getElementById("risks").innerHTML=riskList.map(r=>`<div class="riskrow"><span>${r}</span><input type="checkbox" class="risk" aria-label="${r}"></div>`).join("");
-const $=id=>document.getElementById(id);
-
-function valuation(){
-  const profit=+$("profit").value||0;
-  const shares=20.97; // 赣锋示例；更换公司时可自行修改为实际总股本
-  const vals=[
-    profit*(+$("peLow").value||0)/shares,
-    profit*(+$("peMid").value||0)/shares,
-    profit*(+$("peHigh").value||0)/shares
-  ];
-  $("vLow").textContent=vals[0].toFixed(1)+"元";
-  $("vMid").textContent=vals[1].toFixed(1)+"元";
-  $("vHigh").textContent=vals[2].toFixed(1)+"元";
-  const max=Math.max(vals[2],+$("price").value||0,1);
-  ["mLow","mMid","mHigh","mNow"].forEach((id,i)=>{
-    const v=i<3?vals[i]:+$("price").value||0;
-    $(id).style.left=Math.min(100,Math.max(0,v/max*100))+"%";
-  });
+const defs=[
+{id:"sows",name:"能繁母猪/产能",freq:"月度",unit:"万头",lead:"领先8–12个月",desc:"决定未来供给中枢"},
+{id:"piglet",name:"仔猪价格",freq:"周度",unit:"元/头",lead:"领先4–6个月",desc:"观察补栏预期"},
+{id:"hog",name:"商品猪价格",freq:"周度",unit:"元/kg",lead:"当前景气",desc:"观察现货价格位置"},
+{id:"weight",name:"生猪出栏均重",freq:"周度",unit:"kg",lead:"领先1–3个月",desc:"识别压栏与供应压力"},
+{id:"futures",name:"生猪期货",freq:"日度",unit:"元/吨",lead:"未来预期",desc:"观察远期定价"},
+{id:"profit",name:"自繁自养利润",freq:"周度",unit:"元/头",lead:"去产能压力",desc:"验证行业现金流压力"}];
+let charts={};
+const q=(a,v)=>{let s=[...a].sort((x,y)=>x-y);return s.length?s.filter(x=>x<=v).length/s.length:.5};
+function trend(a){let n=Math.min(6,Math.max(2,Math.floor(a.length/5)));return a.length>n?(a.at(-1)-a.at(-1-n))/Math.abs(a.at(-1-n)):0}
+function analyze(d,a){
+ const v=a.at(-1),qq=q(a,v),t=trend(a);let label=qq<.3?"偏低":qq>.7?"偏高":"中性",cls=qq<.3?"low":qq>.7?"high":"mid",text="";
+ if(d.id==="sows"){label=t<-.01?"偏低/去化":t>.01?"偏高/补栏":"中性";cls=t<-.01?"low":t>.01?"high":"mid";text=t<0?"供给端仍在收缩，中长期偏利多。":"母猪未继续下降，需警惕未来供给重新宽松。"}
+ if(d.id==="piglet"){label=t>.05?"低位回升":t<-.08?"偏弱":"中性";cls=t>.05?"low":t<-.08?"high":"mid";text=t>0?"补栏预期边际改善，值得重点跟踪。":"仔猪仍偏弱，补栏意愿尚未明显强化。"}
+ if(d.id==="hog"){label=t>.05?"向上修复":t<-.05?"向下":"中性";cls=t>.05?"low":t<-.05?"high":"mid";text=t>0?"现货价格正在修复，但仍需领先指标确认。":"现货价格趋势偏弱。"}
+ if(d.id==="weight"){label=t>.015?"偏高/供应压力":t<-.015?"下降/偏利多":"中性";cls=t>.015?"high":t<-.015?"low":"mid";text=t<0?"均重下降有利于减轻短期供应压力。":"均重偏高或继续上升，需防集中出栏。"}
+ if(d.id==="futures"){label=t>.04?"预期改善":t<-.04?"预期转弱":"中性";cls=t>.04?"low":t<-.04?"high":"mid";text=t>0?"期货预期改善，市场开始交易未来景气。":"期货预期偏弱。"}
+ if(d.id==="profit"){label=v<0?"亏损/去产能":v>300?"盈利偏高":"中性";cls=v<0?"low":v>300?"high":"mid";text=v<0?"亏损有利于继续去产能，但现金流压力仍大。":"利润转正后需观察补栏是否启动。"}
+ return {v,qq,t,label,cls,text};
 }
-function calc(){
-  let total=0;
-  document.querySelectorAll(".sc").forEach(x=>{
-    const max=+x.dataset.max;
-    const v=Math.max(0,Math.min(max,+x.value||0));
-    x.value=v; total+=v;
-    x.nextElementSibling.firstElementChild.style.width=(v/max*100)+"%";
-  });
-  $("total").textContent=Number.isInteger(total)?total:total.toFixed(1);
-  $("quality").textContent=total>=85?"优秀":total>=75?"优秀偏周期":total>=65?"良好":total>=55?"一般":"谨慎";
-  const blocked=document.querySelectorAll(".risk:checked").length>0;
-  $("verdict").textContent=blocked?"风险否决 / 重点核查":total>=85?"优质公司 / 可重点研究":total>=75?"合理估值 / 持有观察":total>=65?"观察 / 等待更好价格":"谨慎";
-  $("riskstate").textContent=blocked?"当前：已触发一票否决项，请先完成风险核查":"当前：未触发否决项";
-  $("riskstate").className="riskstate "+(blocked?"bad":"good");
-  valuation();
+function render(data){
+ document.getElementById("update").textContent="数据更新时间："+(data.updated_at||"—");
+ const arr=defs.map(d=>({d,s:analyze(d,(data.series[d.id]||[]).map(Number).filter(Number.isFinite))}));
+ const s=arr[0].s,p=arr[1].s,f=arr[4].s,h=arr[2].s;
+ const score=(s.t<0?35:s.t<.01?15:0)+(p.t>0?20:Math.abs(p.t)<.05?8:0)+(f.t>0?20:Math.abs(f.t)<.04?8:0)+(h.t>0?15:Math.abs(h.t)<.04?7:0);
+ document.getElementById("score").textContent=score+" / 100";
+ document.getElementById("stage").textContent=score>=65?"周期反转观察":score>=45?"底部修复 / 等待确认":"供给宽松 / 弱势阶段";
+ document.getElementById("signal").textContent=score>=65?"综合信号：偏多":score>=45?"综合信号：中性偏多":"综合信号：偏谨慎";
+ const watch=score>=65?"猪价上涨能否与仔猪、期货预期同步。":score>=45?"能繁母猪去化是否持续，以及仔猪是否止跌回升。":"重点看产能去化速度，以及猪价和仔猪是否同步企稳。";
+ document.getElementById("focus").textContent="当前最重要："+watch;document.getElementById("overall").textContent=watch;
+ document.getElementById("watch").innerHTML="1. 能繁母猪是否持续下降<br>2. 仔猪价格是否止跌回升<br>3. 期货远月预期是否持续走强";
+ document.getElementById("grid").innerHTML=arr.map(x=>`<article class="card"><div class="head"><div><h2>${x.d.name}</h2><div class="meta">${x.d.freq}｜${x.d.lead}｜${x.d.desc}</div></div><span class="pill ${x.s.cls}">${x.s.label}</span></div><div class="chart"><canvas id="chart-${x.d.id}"></canvas></div><div class="metrics"><div class="metric"><span>当前值</span>${x.s.v.toLocaleString()} ${x.d.unit}</div><div class="metric"><span>历史分位</span>${(x.s.qq*100).toFixed(0)}%</div><div class="metric"><span>近期趋势</span>${x.s.t>=0?"+":""}${(x.s.t*100).toFixed(1)}%</div></div><div class="judgement"><b>判断：</b>${x.s.text}</div></article>`).join("");
+ arr.forEach(x=>{let el=document.getElementById("chart-"+x.d.id);charts[x.d.id]?.destroy();charts[x.d.id]=new Chart(el,{type:"line",data:{labels:data.dates,datasets:[{data:data.series[x.d.id],borderWidth:2,pointRadius:0,tension:.18,fill:true}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:9,font:{size:9}}},y:{ticks:{maxTicksLimit:6,font:{size:9}}}}}})});
 }
-document.addEventListener("input",calc);
-calc();
-</script>
-</body>
-</html>
+async function load(){try{const r=await fetch("data/data.json?ts="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("data.json尚未生成");render(await r.json())}catch(e){document.getElementById("update").textContent=e.message;}}
+document.getElementById("refresh").onclick=load;load();
+</script></body></html>
